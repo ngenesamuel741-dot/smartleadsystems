@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://smartlead.ng/sitemap.xml
