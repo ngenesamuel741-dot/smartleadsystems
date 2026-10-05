@@ -1,0 +1,3 @@
+export const firebaseConfig={apiKey:"PASTE_FIREBASE_API_KEY",authDomain:"smart-lead-ng.firebaseapp.com",projectId:"smart-lead-ng",storageBucket:"smart-lead-ng.firebasestorage.app",messagingSenderId:"714552869526",appId:"PASTE_FIREBASE_APP_ID",measurementId:"PASTE_FIREBASE_MEASUREMENT_ID"};
+export const cloudinaryConfig={cloudName:"PASTE_CLOUDINARY_CLOUD_NAME",uploadPreset:"PASTE_CLOUDINARY_UNSIGNED_UPLOAD_PRESET",folder:"smart-lead-systems"};
+export const siteConfig={name:"Smart Lead Systems",url:"https://smartlead.ng",email:"hello@smartlead.ng",whatsapp:"+2349078581006"};
