@@ -1,9 +1,18 @@
 # Smart Lead Systems
 
-Smart Lead Systems is a Nigerian full-stack digital agency. Core offers: website development, mobile/app development and Meta Ads management. Additional expertise: graphics design, video editing, AI automation and social media management.
+Smart Lead Systems is a Nigerian full-stack digital growth agency serving businesses that need serious digital execution.
 
-Audience: e-commerce brands, startups, service businesses and ambitious companies.
+Core services:
+- Website Development
+- App / Mobile Development
+- Meta Ads Management
+- Graphics Design
+- Video Editing
+- AI Automation
+- Social Media Management
 
-The website contains editable services, portfolio/case studies, founder information and a Firebase-powered CMS with a functional blog.
+Positioning:
+Smart Lead Systems combines development, paid growth and creative execution under one roof. The agency is built for e-commerce brands, startups, service businesses and ambitious companies that want to build, reach and grow.
 
 Website: https://smartlead.ng/
+WhatsApp: +2349078581006
