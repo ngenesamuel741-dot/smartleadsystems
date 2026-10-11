@@ -1,1 +1,26 @@
-import{Link,useParams}from"react-router-dom";import{ArrowLeft,ArrowUpRight}from"lucide-react";import SEO from"../components/SEO";import Media from"../components/Media";import{useContent}from"../hooks/useContent";export default function Post(){const{slug}=useParams(),{posts}=useContent(),p=posts.find(x=>x.slug===slug)||posts[0];return <><SEO title={p.title} description={p.excerpt} path={"/blog/"+p.slug} type="article"/><article className="sl-article sl-container"><Link className="sl-back" to="/blog"><ArrowLeft size={15}/> Back to insights</Link><span className="sl-eyebrow">{p.category} · {p.date}</span><h1>{p.title}</h1><p className="sl-article-lead">{p.excerpt}</p><Media src={p.coverImage} alt={p.title}/><div className="sl-article-body">{p.content.split("\n\n").map((x,i)=><p key={i}>{x}</p>)}</div><div className="sl-article-end"><span>Smart Lead Systems</span><Link className="sl-link" to="/contact">Work with us <ArrowUpRight size={15}/></Link></div></article></>}
+import { Link, useParams } from "react-router-dom";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import Media from "../components/Media";
+import NotFound from "./NotFound";
+import { useContent } from "../hooks/useContent";
+import { mdToHtml, readingMinutes } from "../lib/md.js";
+import { waLink } from "../lib/links";
+import { trackContact } from "../lib/track";
+
+export default function Post() {
+  const { slug } = useParams(), { posts, settings: s } = useContent(), p = posts.find(x => x.slug === slug);
+  if (!p) return <NotFound />;
+  const related = posts.filter(x => x.id !== p.id).sort((a, b) => (b.category === p.category) - (a.category === p.category)).slice(0, 3);
+  const wa = waLink(s, `Hi ${s.name}, I read your article "${p.title}" and I'd like help applying it to my business.`);
+  return <article className="sl-article sl-container">
+    <Link className="sl-back" to="/blog"><ArrowLeft size={15} /> Back to insights</Link>
+    <span className="sl-eyebrow">{p.category} · {p.date} · {p.content ? readingMinutes(p.content) : 1} min read</span>
+    <h1>{p.title}</h1><p className="sl-article-lead">{p.excerpt}</p>
+    {p.coverImage && <Media src={p.coverImage} alt={p.coverAlt || p.title} />}
+    {p.content ? <div className="sl-article-body" dangerouslySetInnerHTML={{ __html: mdToHtml(p.content) }} /> : <div className="sl-article-body"><p>Loading article…</p></div>}
+    <aside className="sl-article-cta"><h2>Want help applying this to your business?</h2><p>Send us a quick message about what you're working on. We'll tell you the most useful next step.</p>
+      <div className="sl-actions"><a className="sl-btn" href={wa} target="_blank" rel="noreferrer" onClick={trackContact}>Message us on WhatsApp <ArrowUpRight size={16} /></a><Link className="sl-link" to="/contact">Or use the contact form <ArrowUpRight size={15} /></Link></div></aside>
+    <div className="sl-article-end"><span>By {p.author || s.name}</span><Link className="sl-link" to="/pricing">See pricing <ArrowUpRight size={15} /></Link></div>
+    {related.length > 0 && <section className="sl-related"><h2>Keep reading</h2><div className="sl-insights">{related.map(x => <Link className="sl-insight" to={"/blog/" + x.slug} key={x.id}><Media src={x.coverImage} alt={x.coverAlt || x.title} /><span>{x.category} · {x.date}</span><h3>{x.title}</h3></Link>)}</div></section>}
+  </article>;
+}

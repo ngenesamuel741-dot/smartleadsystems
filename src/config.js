@@ -9,5 +9,4 @@ export const firebaseConfig={
   appId:"1:714552869526:web:c800414a0211d82a51f8b7",
   measurementId:"G-5S4VP5R31B"
 };
-export const cloudinaryConfig={cloudName:"PASTE_CLOUDINARY_CLOUD_NAME",uploadPreset:"PASTE_CLOUDINARY_UNSIGNED_UPLOAD_PRESET",folder:"smart-lead-systems"};
-export const siteConfig={name:"Smart Lead Systems",url:"https://smartlead.ng",email:"hello@smartlead.ng",whatsapp:"+2349078581006"};
+export const cloudinaryConfig={cloudName:"twlqodtl",uploadPreset:"Smartleadsystems",folder:"smart-lead-systems"};

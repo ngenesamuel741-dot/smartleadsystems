@@ -1,11 +1,3 @@
-import {defineConfig} from "vite";
-import react from "@vitejs/plugin-react";
-
-export default defineConfig({
-  plugins:[react()],
-  // Use VITE_BASE_PATH when hosting under a repository path.
-  // The default "/" is correct for smartlead.ng and normal web hosting.
-  base:process.env.VITE_BASE_PATH||"/",
-  server:{host:true},
-  preview:{host:true}
-});
+import{defineConfig}from"vite";import react from"@vitejs/plugin-react";
+// "preview" mode: relative asset paths + hash routing so the built folder runs from any static server / phone editor preview.
+export default defineConfig(({mode})=>({plugins:[react()],base:mode==="preview"?"./":"/",build:mode==="preview"?{outDir:"preview",emptyOutDir:true}:{}}));

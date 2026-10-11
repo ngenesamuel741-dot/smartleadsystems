@@ -1,1 +1,23 @@
-import{Helmet}from"react-helmet-async";const site="https://smartlead.ng";export default function SEO({title,description,path="/",type="website"}){const fullTitle=title?title+" — Smart Lead Systems":"Smart Lead Systems — Best-in-Class Digital Growth Agency";const json={"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"Smart Lead Systems","url":site,"logo":site+"/logo.svg","email":"hello@smartlead.ng","telephone":"+2349078581006","areaServed":{"@type":"Country","name":"Nigeria"}},{"@type":"ProfessionalService","name":"Smart Lead Systems","url":site,"description":"Full-stack digital growth services including website development, mobile app development, Meta Ads management, graphics design, video editing, AI automation and social media management.","serviceType":["Website Development","App / Mobile Development","Meta Ads Management","Graphics Design","Video Editing","AI Automation","Social Media Management"]},{"@type":"WebSite","name":"Smart Lead Systems","url":site}]};return <Helmet><title>{fullTitle}</title><meta name="description" content={description}/><meta name="robots" content="index,follow,max-image-preview:large"/><link rel="canonical" href={site+path}/><meta property="og:type" content={type}/><meta property="og:title" content={fullTitle}/><meta property="og:description" content={description}/><meta property="og:url" content={site+path}/><meta name="twitter:card" content="summary_large_image"/><script type="application/ld+json">{JSON.stringify(json)}</script></Helmet>}
+import { Helmet } from "react-helmet-async";
+import { abs } from "../lib/seo.js";
+
+// Renders the title/description/canonical/social tags for the current route (computed in Layout).
+export default function SEO({ seo, url }) {
+  const u = abs({ settings: { url } }, seo.path === "/" ? "/" : seo.path);
+  return <Helmet>
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <meta name="robots" content={seo.noindex ? "noindex,follow" : "index,follow,max-image-preview:large,max-snippet:-1"} />
+    {!seo.noindex && <link rel="canonical" href={u} />}
+    <meta property="og:type" content={seo.type} />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    <meta property="og:url" content={u} />
+    {seo.image && <meta property="og:image" content={seo.image} />}
+    {seo.image && <meta name="twitter:image" content={seo.image} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={seo.title} />
+    <meta name="twitter:description" content={seo.description} />
+    {seo.published && <meta property="article:published_time" content={seo.published} />}
+  </Helmet>;
+}

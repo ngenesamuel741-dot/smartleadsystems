@@ -1,1 +1,18 @@
-import{Link}from"react-router-dom";import{ArrowUpRight,Code2,Smartphone,Megaphone,Palette,Video,Bot,Share2}from"lucide-react";import SEO from"../components/SEO";import Media from"../components/Media";import{useContent}from"../hooks/useContent";const icons={"web-development":Code2,"app-development":Smartphone,"meta-ads":Megaphone,"graphics-design":Palette,"video-editing":Video,"ai-automation":Bot,"social-media":Share2};export default function Services(){const{services}=useContent();return <><SEO title="Services" description="Explore Smart Lead Systems services: website development, mobile app development, Meta Ads management, graphics design, video editing, AI automation and social media management." path="/services"/><section className="sl-page-hero sl-container"><span className="sl-eyebrow">OUR SERVICES</span><h1>The digital work your business needs, <em>under one roof.</em></h1><p>Smart Lead Systems is a best-in-class digital growth partner for businesses that need strong execution across technology, marketing and creative.</p></section><section className="sl-section sl-container">{services.map((s,i)=>{const I=icons[s[0]]||Code2;return <article className="sl-detail" id={s[0]} key={s[0]}><div><div className="sl-detail-top"><span>0{i+1}</span><I size={23}/></div><span className="sl-eyebrow">{s[2]}</span><h2>{s[1]}</h2><p>{s[3]}</p><div className="sl-tags sl-detail-tags">{s[5].map(x=><span key={x}>{x}</span>)}</div><Link className="sl-link" to="/contact">Discuss {s[1]} <ArrowUpRight size={16}/></Link></div><Media src={s[4]} alt={s[1]}/></article>})}</section><section className="sl-section sl-dark"><div className="sl-container sl-narrow"><span className="sl-eyebrow sl-light">ONE TEAM. MANY CAPABILITIES.</span><h2>Build it. Make it look good. Get it seen. Keep it moving.</h2><p>That's the Smart Lead Systems approach — practical digital execution without the agency runaround.</p><Link className="sl-btn sl-btn-light" to="/contact">Start a project <ArrowUpRight size={17}/></Link></div></section></>}
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
+import Media from "../components/Media";
+import { useContent } from "../hooks/useContent";
+import { serviceIcon } from "../lib/icons";
+
+export default function Services() {
+  const { services } = useContent();
+  return <>
+    <section className="sl-page-hero sl-container"><span className="sl-eyebrow">OUR SERVICES</span><h1>The digital work your business needs, <em>under one roof.</em></h1><p>Smart Lead Systems is a best-in-class digital growth partner for e-commerce brands and fintech startups that need strong execution across technology, marketing and creative.</p></section>
+    <section className="sl-section sl-container">{services.map((x, i) => { const I = serviceIcon(x.id); return <article className="sl-detail" id={x.id} key={x.id}>
+      <div><div className="sl-detail-top"><span>0{i + 1}</span><I size={23} /></div><span className="sl-eyebrow">{x.accent}</span><h2>{x.title}</h2><p>{x.description}</p>
+        <div className="sl-tags sl-detail-tags">{x.capabilities.map(c => <span key={c}>{c}</span>)}</div>
+        <Link className="sl-link" to={"/contact?service=" + encodeURIComponent(x.title)}>Discuss {x.title} <ArrowUpRight size={16} /></Link></div>
+      <Media src={x.image} alt={x.title} /></article>; })}</section>
+    <section className="sl-section sl-dark"><div className="sl-container sl-narrow"><span className="sl-eyebrow sl-light">ONE TEAM. MANY CAPABILITIES.</span><h2>Build it. Make it look good. Get it seen. Keep it moving.</h2><p>That's the Smart Lead Systems approach: practical digital execution without the agency runaround.</p><Link className="sl-btn sl-btn-light" to="/contact">Start a project <ArrowUpRight size={17} /></Link></div></section>
+  </>;
+}
