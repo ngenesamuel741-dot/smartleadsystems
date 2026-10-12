@@ -1,0 +1,16 @@
+name: Package site
+on:
+  push:
+    branches: [main]
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create ZIP
+        run: zip -r smart-lead-systems-site.zip . -x ".git/*"
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: smart-lead-systems-site
+          path: smart-lead-systems-site.zip
