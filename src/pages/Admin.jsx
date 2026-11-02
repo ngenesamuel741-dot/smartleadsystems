@@ -9,6 +9,7 @@ import { SEED } from "../content/seed";
 import { pendingUpdates } from "../content/update";
 import { COLLECTIONS, SETTINGS_GROUPS } from "../content/schema";
 import { slugify } from "../lib/md.js";
+import { DEFAULT_WRITER } from "../lib/blogwriter.js";
 import { cdn, isVideo } from "../lib/media.js";
 import "../admin.css";
 
@@ -259,15 +260,61 @@ function Overview() {
     <h2>Tips for ranking on Google and AI assistants</h2><ul className="tips"><li>Write articles that answer a real question your customers ask. Use ## headings, short paragraphs and lists.</li><li>Fill in the excerpt, cover image and cover image description on every post.</li><li>Add your founder photo and bio under Founder, and your social links under Site settings.</li><li>New posts appear in /sitemap.xml, /rss.xml and /llms.txt automatically. Submit /sitemap.xml once in Google Search Console.</li></ul></div>;
 }
 
+// AI blog writer: settings + what the writer remembers. The writing runs on Netlify (netlify/functions/blog-writer-background.mjs).
+function BlogWriter() {
+  const [v, setV] = useState(null), [mem, setMem] = useState({}), [msg, setMsg] = useState(""), [busy, setBusy] = useState(false), [wait, setWait] = useState(false);
+  const loadMem = useCallback(async () => { try { const m = await getDoc(doc(db, "private", "blogmemory")); const d = m.exists() ? m.data() : {}; setMem(d); return d; } catch (e) { return {}; } }, []);
+  useEffect(() => { getDoc(doc(db, "private", "blogwriter")).then(x => setV({ ...DEFAULT_WRITER, ...(x.exists() ? x.data() : {}) })).catch(e => { setMsg(e.message); setV({ ...DEFAULT_WRITER }); }); loadMem(); }, [loadMem]);
+  if (!v) return <p>Loading…</p>;
+  const set = (k, x) => setV(o => ({ ...o, [k]: x })), lines = a => (Array.isArray(a) ? a : String(a || "").split("\n")).map(x => x.trim()).filter(Boolean);
+  async function save() {
+    setBusy(true); try { await setDoc(doc(db, "private", "blogwriter"), { enabled: !!v.enabled, autoPublish: !!v.autoPublish, postsPerDay: Math.min(2, Math.max(1, Number(v.postsPerDay) || 2)), author: String(v.author || ""), pillars: lines(v.pillars), voice: String(v.voice || ""), extraRules: String(v.extraRules || "") }); setMsg("Saved."); } catch (e) { setMsg(e.message); } setBusy(false);
+  }
+  async function saveNotes() { try { await setDoc(doc(db, "private", "blogmemory"), { styleNotes: String(mem.styleNotes || "") }, { merge: true }); setMsg("Style notes saved."); } catch (e) { setMsg(e.message); } }
+  async function runNow() {
+    setMsg(""); setWait(true);
+    try {
+      const token = await auth.currentUser.getIdToken(), before = mem.lastRunAt || 0;
+      const r = await fetch("/.netlify/functions/blog-writer-background?source=manual", { method: "POST", headers: { Authorization: "Bearer " + token } });
+      if (![200, 202].includes(r.status)) throw new Error(r.status === 404 ? "The writer is not deployed yet. Redeploy the site on Netlify." : "The writer could not start (" + r.status + "). Check you are signed in as the admin.");
+      setMsg("Writing… this takes 1–2 minutes. You can leave this page; the draft will appear under Blog posts.");
+      for (let k = 0; k < 40; k++) { await new Promise(res => setTimeout(res, 5000)); const m = await loadMem(); if ((m.lastRunAt || 0) > before && m.lastStatus !== "writing") { setMsg(m.lastStatus === "ok" ? `Done: "${m.lastPostTitle}" was saved as ${m.lastPostPublished ? "published" : "a draft"}. Open Blog posts to add your photo.` : "It did not work: " + (m.lastError || "unknown error")); setWait(false); return; } }
+      setMsg("Still working. Check again in a minute.");
+    } catch (e) { setMsg(e.message); }
+    setWait(false);
+  }
+  const when = t => t ? new Date(t).toLocaleString() : "never";
+  return <div className="settings"><div className="edithead"><div><small>AUTOMATION</small><h2>AI blog writer</h2></div><button className="primary" disabled={busy} onClick={save}>{busy ? "Saving…" : "Save settings"}</button></div>
+    {msg && <p className="msg">{msg}</p>}
+    <fieldset><legend>Status</legend>
+      <p>Last run: <b>{when(mem.lastRunAt)}</b>{mem.lastProvider ? ` (via ${mem.lastProvider})` : ""} · {mem.lastStatus === "ok" ? "worked" : mem.lastStatus === "writing" ? "writing now…" : mem.lastStatus === "error" ? "failed" : "not run yet"}{mem.lastPostTitle ? ` · last post: “${mem.lastPostTitle}”` : ""}</p>
+      {mem.lastStatus === "error" && <p className="msg">{mem.lastError}</p>}
+      <button className="primary" disabled={wait} onClick={runNow}>{wait ? "Writing…" : "Write a draft now"}</button> <small>It also writes by itself at 8:00 and 17:00 Lagos time.</small></fieldset>
+    <fieldset><legend>Settings</legend>
+      <label className="fld"><span className="chk"><input type="checkbox" checked={!!v.enabled} onChange={e => set("enabled", e.target.checked)} /> Write posts automatically</span></label>
+      <label className="fld"><span className="chk"><input type="checkbox" checked={!!v.autoPublish} onChange={e => set("autoPublish", e.target.checked)} /> Publish straight away (leave OFF to review and add your own photo first)</span><small>When off, every post is saved as a draft under Blog posts. Add your photo, tick Published, Save.</small></label>
+      <label className="fld">Posts per day<select value={v.postsPerDay} onChange={e => set("postsPerDay", e.target.value)}><option value="1">1 (morning)</option><option value="2">2 (morning and evening)</option></select></label>
+      <label className="fld">Author name shown on posts<input value={v.author} onChange={e => set("author", e.target.value)} /></label>
+      <label className="fld">Topic areas (one per line)<textarea rows={9} value={Array.isArray(v.pillars) ? v.pillars.join("\n") : v.pillars} onChange={e => set("pillars", e.target.value)} /><small>The writer rotates through these and picks a fresh question each time.</small></label>
+      <label className="fld">Voice (how it should sound)<textarea rows={4} value={v.voice} onChange={e => set("voice", e.target.value)} /></label>
+      <label className="fld">Extra rules (optional)<textarea rows={3} value={v.extraRules} onChange={e => set("extraRules", e.target.value)} placeholder="e.g. Mention that we offer a free website audit. Never mention competitor names." /></label>
+    </fieldset>
+    <fieldset><legend>What the writer remembers</legend>
+      <label className="fld">Style notes (it updates these after every post; you can edit them)<textarea rows={6} value={mem.styleNotes || ""} onChange={e => setMem(o => ({ ...o, styleNotes: e.target.value }))} /></label><button onClick={saveNotes}>Save style notes</button>
+      <p style={{ marginTop: 16 }}><b>Recent topics it will not repeat:</b></p>
+      <ul>{(mem.recent || []).slice(0, 15).map((r, k) => <li key={k}>{r.title} <small>({r.pillar})</small></li>)}{!(mem.recent || []).length && <li>Nothing yet.</li>}</ul></fieldset>
+  </div>;
+}
+
 function ColRoute() { const { col } = useParams(); return COLLECTIONS[col] ? <CollectionEditor key={col} col={col} /> : <p>Unknown section.</p>; }
 
 function Dashboard() {
   const link = (to, label, end) => <NavLink key={to} to={to} end={end}>{label}</NavLink>;
   return <div className="dash"><aside><Link to="/admin" className="brand"><b>SL</b> CMS</Link>
-    {link("/admin", "Overview", true)}{link("/admin/leads", "Leads")}{link("/admin/settings", "Site settings")}
+    {link("/admin", "Overview", true)}{link("/admin/leads", "Leads")}{link("/admin/settings", "Site settings")}{link("/admin/blog-writer", "AI blog writer")}
     {Object.entries(COLLECTIONS).map(([k, d]) => link("/admin/c/" + k, d.label))}
     <button onClick={() => signOut(auth)}>Sign out</button></aside>
-    <main><Routes><Route path="/" element={<Overview />} /><Route path="/settings" element={<SettingsEditor />} /><Route path="/leads" element={<Leads />} /><Route path="/c/:col" element={<ColRoute />} /></Routes></main></div>;
+    <main><Routes><Route path="/" element={<Overview />} /><Route path="/settings" element={<SettingsEditor />} /><Route path="/leads" element={<Leads />} /><Route path="/blog-writer" element={<BlogWriter />} /><Route path="/c/:col" element={<ColRoute />} /></Routes></main></div>;
 }
 
 export default function Admin() {

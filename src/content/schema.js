@@ -13,7 +13,7 @@ export const COLLECTIONS = {
   posts: { label: "Blog posts", single: "post", title: "title", fields: [
     T("title", "Title"), T("slug", "URL slug", { hint: "Leave empty to create it from the title. Used in the link: /blog/your-slug" }), B("published", "Published (untick to keep as a draft)"), { k: "date", label: "Date", t: "date" },
     T("category", "Category"), T("author", "Author"), A("excerpt", "Excerpt", { hint: "1–2 sentences. Shown on cards and used as the Google description." }),
-    M("coverImage", "Cover photo or video"), G("gallery", "More photos and videos (gallery at the end of the article)"), T("coverAlt", "Cover image description (for accessibility and Google Images)"),
+    M("coverImage", "Cover photo or video"), G("gallery", "More photos and videos (gallery at the end of the article)"), T("coverAlt", "Cover image description (for accessibility and Google Images)"), A("imageIdea", "Photo idea from the AI writer (not shown on the site)"),
     { k: "content", label: "Article", t: "markdown", hint: "Write with ## Heading, - bullet lists, **bold**, [link text](https://…), ![alt](image-url)" },
     A("waMessage", "WhatsApp: ready-typed message (optional)", { hint: "Already typed when a reader taps WhatsApp at the end of this article. Leave empty for an automatic one." }), T("metaTitle", "SEO title (optional)", { hint: "Overrides the title in Google results" }), A("metaDescription", "SEO description (optional)", { hint: "About 150 characters" })
   ] },

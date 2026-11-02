@@ -153,3 +153,21 @@ Sitemap: every page is `daily` with high priority (home and blog 1.0). Google tr
 - `netlify/functions/seo.mjs` serves pages added after the last build; `netlify/functions/lead.mjs` sends lead emails and Meta/TikTok events and the admin test email.
 - `scripts/prerender.mjs` writes static pages, sitemap, RSS and llms.txt after each build.
 - Colours: top of `src/site.css` and `src/admin.css`.
+
+---
+
+## 12. AI blog writer (writes drafts twice a day)
+**What it does:** at 8:00 and 17:00 Lagos time it writes one blog post that answers a real question a business owner has, and always presents Smart Lead Systems as the right team to help. It remembers earlier posts in Firebase (`private/blogmemory`), so it copies the blog's voice and never repeats a topic. Posts are saved as **drafts** (no photo): open Admin → Blog posts, add your own photo, tick **Published**, Save. Manage it in **Admin → AI blog writer** (topics, voice, on/off, "Write a draft now").
+
+**One-time setup (Netlify → Site configuration → Environment variables):**
+1. `FIREBASE_SERVICE_ACCOUNT` (required): Firebase → Project settings → Service accounts → **Generate new private key**. Paste the whole downloaded JSON as the value (or its base64). This lets the writer save posts and memory.
+2. At least ONE AI key. Free options first; if one runs out of quota the next one takes over automatically:
+   - `GEMINI_API_KEY`: free at aistudio.google.com → Get API key (best free choice; it can also search the web for AI-news posts).
+   - `GROQ_API_KEY`: free at console.groq.com → API Keys.
+   - `OPENROUTER_API_KEY`: free models at openrouter.ai (set `OPENROUTER_MODEL` to a current ":free" model).
+   - `ANTHROPIC_API_KEY`: paid (Claude), used only if you add it.
+   Optional: `AI_PROVIDERS` = order to try, e.g. `gemini,groq`; `GEMINI_MODEL`, `GROQ_MODEL` to change models later.
+Then **Deploys → Trigger deploy → Clear cache and deploy site**, open Admin → AI blog writer and press **Write a draft now** to test. Scheduled runs only work on the published production deploy. Errors show in the Status box and in Netlify → Logs → Functions → `blog-writer-background`.
+
+**Numbered lists and bold in posts:** `1. 2. 3.` keep their numbers even with paragraphs between them. A line that is only **bold** shows as a sub-heading.
+**Photos** now show in their real shape (9:16, 16:9, square...) with no cropping.
