@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { abs } from "../lib/seo.js";
 
 // Renders the title/description/canonical/social tags for the current route (computed in Layout).
-export default function SEO({ seo, url, jsonld }) {
+export default function SEO({ seo, url }) {
   const u = abs({ settings: { url } }, seo.path === "/" ? "/" : seo.path);
   return <Helmet>
     <title>{seo.title}</title>
@@ -19,6 +19,5 @@ export default function SEO({ seo, url, jsonld }) {
     <meta name="twitter:title" content={seo.title} />
     <meta name="twitter:description" content={seo.description} />
     {seo.published && <meta property="article:published_time" content={seo.published} />}
-    {jsonld && <script type="application/ld+json">{JSON.stringify(jsonld).replace(/</g, "\\u003c")}</script>}
   </Helmet>;
 }
