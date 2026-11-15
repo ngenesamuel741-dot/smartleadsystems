@@ -8,7 +8,7 @@ import { US_REGIONS, US_FAQS } from "../content/usa.js";
 const a = (href, text) => `<a href="${e(href)}">${e(text)}</a>`;
 const list = items => "<ul>" + items.map(x => `<li>${e(x)}</li>`).join("") + "</ul>";
 const imgs = (arr, alt) => (arr || []).map((u, i) => img(u, `${alt} ${i + 1}`)).join("");
-const img = (src, alt) => src && !isVideo(src) ? `<img src="${e(cdn(src, { w: 1200 }))}" alt="${e(alt)}" loading="lazy"/>` : "";
+const img = (src, alt) => src && !isVideo(src) ? `<img src="${e(cdn(src, { w: 1200 }))}" alt="${e(alt)}" title="${e(alt)}" loading="lazy" decoding="async"/>` : "";
 
 function chrome(d, inner) {
   const s = d.settings;
