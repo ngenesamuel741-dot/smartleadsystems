@@ -19,7 +19,7 @@ export default function Layout() {
     window.scrollTo(0, 0);
   }, [loc.pathname, loc.hash]);
   return <div className="sl-shell">
-    <SEO seo={route.seo} url={s.url} />
+    <SEO seo={route.seo} url={s.url} jsonld={route.jsonld} />
     <header className="sl-header">
       <Link className="sl-logo" to="/"><img src={logo} alt={s.name} /></Link>
       <nav className={open ? "sl-nav sl-nav-open" : "sl-nav"} aria-label="Main">
