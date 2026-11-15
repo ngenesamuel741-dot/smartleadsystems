@@ -12,7 +12,7 @@ const img = (src, alt) => src && !isVideo(src) ? `<img src="${e(cdn(src, { w: 12
 
 function chrome(d, inner) {
   const s = d.settings;
-  const nav = [["/", "Home"], ["/services", "Services"], ["/usa", "USA service areas"], ["/work", "Work"], ["/pricing", "Pricing"], ["/blog", "Insights"], ["/contact", "Contact"]].map(([h, t]) => a(h, t)).join(" ");
+  const nav = [["/", "Home"], ["/services", "Services"], ["/work", "Work"], ["/pricing", "Pricing"], ["/blog", "Insights"], ["/contact", "Contact"]].map(([h, t]) => a(h, t)).join(" ");
   const foot = [["/founders", "Founder"], ["/usa", "USA service areas"], ["/privacy", "Privacy Policy"], ["/terms", "Terms of Service"]].map(([h, t]) => a(h, t)).join(" ");
   return `<header><a href="/">${e(s.name)}</a><nav>${nav}</nav></header><main>${inner}</main><footer><p>${e(s.footerText)}</p><p>${a("mailto:" + s.email, s.email)} · ${e(s.location)}</p><nav>${foot}</nav></footer>`;
 }
