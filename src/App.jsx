@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
+import USAServices from "./pages/USAServices";
 import Pricing from "./pages/Pricing";
 import Work from "./pages/Work";
 import Blog from "./pages/Blog";
@@ -18,6 +19,7 @@ export default function App() {
     <Route element={<Layout />}>
       <Route path="/" element={<Home />} />
       <Route path="/services" element={<Services />} />
+      <Route path="/usa" element={<USAServices />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/work" element={<Work />} />
       <Route path="/blog" element={<Blog />} />
