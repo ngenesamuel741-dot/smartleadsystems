@@ -7,7 +7,7 @@ import Lightbox from "./Lightbox";
 export default function Media({ src, alt, w = 1200, onZoom }) {
   if (!src) return <div className="media"><div className="placeholder">Smart Lead Systems</div></div>;
   if (isVideo(src)) return <div className="media"><video src={cdn(src)} poster={poster(src) || undefined} controls playsInline preload="metadata" aria-label={alt || ""} /></div>;
-  const img = <img src={cdn(src, { w })} alt={alt || ""} loading="lazy" decoding="async" />;
+  const img = <img src={cdn(src, { w })} alt={alt || ""} title={alt || ""} loading="lazy" decoding="async" />;
   return <div className={"media" + (onZoom ? " zoomable" : "")}>{onZoom ? <button type="button" className="zoom-btn" onClick={onZoom} aria-label={`View larger: ${alt || "image"}`}>{img}</button> : img}</div>;
 }
 
@@ -25,13 +25,13 @@ export function MediaSet({ items, alt, w = 1200 }) {
 export function MediaGrid({ items, alt, zoom = false }) {
   const list = (items || []).filter(Boolean), [open, setOpen] = useState(-1);
   if (!list.length) return null;
-  return <div className="sl-gallery">{list.map((u, k) => <Media key={u + k} src={u} alt={`${alt} ${k + 1}`} w={900} onZoom={zoom ? () => setOpen(k) : undefined} />)}
+  return <div className="sl-gallery">{list.map((u, k) => <Media key={u + k} src={u} alt={`${alt} gallery image ${k + 1}`} title={`${alt} gallery image ${k + 1}`} w={900} onZoom={zoom ? () => setOpen(k) : undefined} />)}
     {open >= 0 && <Lightbox items={list} index={open} alt={alt} onClose={() => setOpen(-1)} onIndex={setOpen} />}</div>;
 }
 
 // A single photo that opens full screen when tapped (founder photo).
 export function ZoomPhoto({ src, alt, w = 1000 }) {
   const [open, setOpen] = useState(false);
-  return <>{<button type="button" className="zoom-btn zoom-plain" onClick={() => setOpen(true)} aria-label={`View larger: ${alt}`}><img src={cdn(src, { w })} alt={alt} loading="lazy" /></button>}
+  return <>{<button type="button" className="zoom-btn zoom-plain" onClick={() => setOpen(true)} aria-label={`View larger: ${alt}`}><img src={cdn(src, { w })} alt={alt} title={alt} loading="eager" decoding="async" /></button>}
     {open && <Lightbox items={[src]} index={0} alt={alt} onClose={() => setOpen(false)} onIndex={() => {}} />}</>;
 }
