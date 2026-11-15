@@ -8,7 +8,7 @@ import { trackContact } from "../lib/track";
 import SEO from "./SEO";
 import Consent from "./Consent";
 
-const NAV = [["/services", "Services"], ["/usa", "USA service areas"], ["/work", "Work"], ["/pricing", "Pricing"], ["/blog", "Insights"], ["/contact", "Contact"]];
+const NAV = [["/services", "Services"], ["/work", "Work"], ["/pricing", "Pricing"], ["/blog", "Insights"], ["/contact", "Contact"]];
 
 export default function Layout() {
   const loc = useLocation(), data = useContent(), s = data.settings, [open, setOpen] = useState(false);
