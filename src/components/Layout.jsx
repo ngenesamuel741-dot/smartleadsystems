@@ -44,7 +44,7 @@ export default function Layout() {
           {socials(s).length > 0 && <div className="sl-socials">{socials(s).map(([n, u]) => <a key={n} href={u} target="_blank" rel="noopener noreferrer me">{n}</a>)}</div>}
         </div>
         <div><span>Explore</span>{NAV.map(([p, l]) => <Link key={p} to={p}>{l}</Link>)}</div>
-        <div><span>Company</span><Link to="/founders">Founder</Link><Link to="/privacy">Privacy Policy</Link><Link to="/terms">Terms of Service</Link></div>
+        <div><span>Company</span><Link to="/founders">Founder</Link><Link to="/usa">USA service areas</Link><Link to="/privacy">Privacy Policy</Link><Link to="/terms">Terms of Service</Link></div>
       </div>
       <div className="sl-container sl-copy"><span>© {new Date().getFullYear()} {s.name}. All rights reserved.</span><span>{s.location} · Serving ambitious businesses</span></div>
     </footer>
