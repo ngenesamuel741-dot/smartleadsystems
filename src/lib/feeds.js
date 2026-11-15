@@ -1,6 +1,6 @@
 import { escapeHtml as e, stripMd } from "./md.js";
 import { STATIC_ROUTES, abs } from "./seo.js";
-import { US_REGIONS } from "../content/usa.js";
+import { US_REGIONS, US_FAQS } from "../content/usa.js";
 
 const day = s => { const t = Date.parse(s); return isNaN(t) ? "" : new Date(t).toISOString().slice(0, 10); };
 
@@ -36,6 +36,7 @@ export function buildLlms(d) {
   if (f) { L.push("", "## Founder", `- [${f.name}, ${f.role}](${abs(d, "/founders")}): ${stripMd(f.bio).slice(0, 220)}`); }
   L.push("", "## Articles and guides"); d.posts.forEach(p => L.push(`- [${p.title}](${abs(d, "/blog/" + p.slug)}): ${p.excerpt || stripMd(p.content).slice(0, 160)}`));
   if (d.faqs.length) { L.push("", "## FAQ"); d.faqs.forEach(q => L.push(`- ${q.question} ${q.answer}`)); }
-  L.push("", "## Contact and enquiry", `- [Contact and submit a project enquiry](${abs(d, "/contact")})`, `- [Contact page](${abs(d, "/contact")})`, `- [Sitemap](${abs(d, "/sitemap.xml")})`, `- [RSS feed](${abs(d, "/rss.xml")})`, `- [Contact](${abs(d, "/contact")})`);
+  L.push("", "## USA service FAQ"); US_FAQS.forEach(q => L.push(`- ${q.question} ${q.answer}`));
+  L.push("", "## Contact and enquiry", `- [Contact and submit a project enquiry](${abs(d, "/contact")})`, `- [Sitemap](${abs(d, "/sitemap.xml")})`, `- [RSS feed](${abs(d, "/rss.xml")})`, `- [USA service areas](${abs(d, "/usa")})`);
   return L.join("\n") + "\n";
 }
